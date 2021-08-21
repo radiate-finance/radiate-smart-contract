@@ -12,4 +12,4 @@ class Calculations(sp.Contract):
     def subtract(self, a, b):
         sp.verify(b <= a, message = "INETEGER_UNDERFLOW")
 
-        return a - b
+        return sp.as_nat(a - b)

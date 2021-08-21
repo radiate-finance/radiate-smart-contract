@@ -1,0 +1,4 @@
+.tests
+.compiled
+__pycache__
+*.pyc
