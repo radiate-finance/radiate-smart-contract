@@ -1,0 +1,39 @@
+[
+ {
+  "shortname": "Radiate",
+  "longname": "Radiate",
+  "scenario": [
+   {
+    "action": "flag",
+    "flag": [
+     "default_record_layout",
+     "comb"
+    ],
+    "line_no": "(\"tests.py\" 8)"
+   },
+   {
+    "action": "html",
+    "inner": "Radiate Contract",
+    "line_no": "(\"tests.py\" 9)",
+    "tag": "h1"
+   },
+   {
+    "action": "html",
+    "inner": "[[TABLEOFCONTENTS]]",
+    "line_no": "(\"tests.py\" 10)",
+    "tag": "p"
+   },
+   {
+    "action": "html",
+    "inner": "Initialise the contract",
+    "line_no": "(\"tests.py\" 18)",
+    "tag": "h2"
+   },
+   {
+    "action": "error",
+    "message": "sp.timestamp(..) awaits a class 'int' and got '(attr (params (\"smart_contracts/contract.py\" 71)) \"startTime\" (\"smart_contracts/contract.py\" 81))' of type class 'smartpy.Expr'. (line 27 of smart_contracts/contract.py)"
+   }
+  ],
+  "kind": "test"
+ }
+]

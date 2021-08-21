@@ -1,0 +1,59 @@
+[
+  {
+    "prim": "storage",
+    "args": [
+      {
+        "prim": "pair",
+        "args": [
+          { "prim": "nat", "annots": [ "%nextStreamId" ] },
+          {
+            "prim": "big_map",
+            "args": [
+              { "prim": "nat" },
+              {
+                "prim": "pair",
+                "args": [
+                  { "prim": "nat", "annots": [ "%deposit" ] },
+                  {
+                    "prim": "pair",
+                    "args": [
+                      { "prim": "nat", "annots": [ "%ratePerSecond" ] },
+                      {
+                        "prim": "pair",
+                        "args": [
+                          { "prim": "address", "annots": [ "%receiver" ] },
+                          {
+                            "prim": "pair",
+                            "args": [
+                              { "prim": "nat", "annots": [ "%remainingBalance" ] },
+                              {
+                                "prim": "pair",
+                                "args": [
+                                  { "prim": "address", "annots": [ "%sender" ] },
+                                  {
+                                    "prim": "pair",
+                                    "args": [
+                                      { "prim": "nat", "annots": [ "%startTime" ] },
+                                      { "prim": "pair", "args": [ { "prim": "nat", "annots": [ "%stopTime" ] }, { "prim": "address", "annots": [ "%tokenAddress" ] } ] }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "annots": [ "%streams" ]
+          }
+        ]
+      }
+    ]
+  },
+  { "prim": "parameter", "args": [ { "prim": "unit" } ] },
+  { "prim": "code", "args": [ [ { "prim": "CDR" }, { "prim": "NIL", "args": [ { "prim": "operation" } ] }, { "prim": "PAIR" } ] ] }
+]

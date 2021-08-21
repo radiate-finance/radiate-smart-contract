@@ -1,0 +1,10 @@
+Comment...
+ h1: Radiate Contract
+Table Of Contents
+
+ Radiate Contract
+# Initialise the contract
+Comment...
+ h2: Initialise the contract
+ !!! Python Error: sp.timestamp(..) awaits a class 'int' and got '(attr (params ("smart_contracts/contract.py" 71)) "startTime" ("smart_contracts/contract.py" 81))' of type class 'smartpy.Expr'. (line 27 of smart_contracts/contract.py)
+ => .tests/Radiate/log.html 2091

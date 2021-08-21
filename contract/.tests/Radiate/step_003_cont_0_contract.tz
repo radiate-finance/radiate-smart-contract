@@ -1,0 +1,8 @@
+parameter unit;
+storage   (pair (nat %nextStreamId) (big_map %streams nat (pair (nat %deposit) (pair (nat %ratePerSecond) (pair (address %receiver) (pair (nat %remainingBalance) (pair (address %sender) (pair (nat %startTime) (pair (nat %stopTime) (address %tokenAddress))))))))));
+code
+  {
+    CDR;        # @storage
+    NIL operation; # list operation : @storage
+    PAIR;       # pair (list operation) @storage
+  };
