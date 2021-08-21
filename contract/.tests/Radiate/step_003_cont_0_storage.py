@@ -1,1 +1,0 @@
-sp.record(nextStreamId = 0, streams = {})
