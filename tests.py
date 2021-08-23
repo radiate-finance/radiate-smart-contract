@@ -74,7 +74,7 @@ def test():
     c1.withdraw(
         streamId = 0,
         amount = 10
-    ).run(sender = user2.address, now = sp.timestamp(100))
+    ).run(sender = user2.address, now = sp.timestamp(100), valid = False)
 
     scenario.h2("Withdrawing from stream of tez")
     c1.withdraw(
@@ -124,7 +124,7 @@ def test():
     c1.withdraw(
         streamId = 1,
         amount = 10
-    ).run(sender = user2, now = sp.timestamp(100))
+    ).run(sender = user2, now = sp.timestamp(100), valid = False)
 
     scenario.h3("Withdrawing after start, before stop time")
     c1.withdraw(
@@ -132,17 +132,22 @@ def test():
         amount = 10
     ).run(sender = user2, now = sp.timestamp(700))
 
-    scenario.h3("Withdraw at stop time")
-    c1.withdraw(
-        streamId = 1,
-        amount = 10
-    ).run(sender = user2, now = sp.timestamp(1000))
+    # scenario.h3("Withdraw at stop time")
+    # c1.withdraw(
+    #     streamId = 1,
+    #     amount = 10
+    # ).run(sender = user2, now = sp.timestamp(1000))
 
-    scenario.h3("Withdraw after stop time")
-    c1.withdraw(
-        streamId = 1,
-        amount = 10
-    ).run(sender = user2, now = sp.timestamp(1200))
+    # scenario.h3("Withdraw after stop time")
+    # c1.withdraw(
+    #     streamId = 1,
+    #     amount = 10
+    # ).run(sender = user2, now = sp.timestamp(1200))
+
+    scenario.h2("Cancelling stream, FA1.2")
+    c1.cancelStream(
+        streamId = 1
+    ).run(sender = user1, now = sp.timestamp(900))
 
     ######################################### FA2 begins here #####################################
 
@@ -195,7 +200,7 @@ def test():
     c1.withdraw(
         streamId = 2,
         amount = 10
-    ).run(sender = user2, now = sp.timestamp(100))
+    ).run(sender = user2, now = sp.timestamp(100), valid = False)
 
     scenario.h3("Withdrawing after start, before stop time")
     c1.withdraw(
@@ -203,17 +208,22 @@ def test():
         amount = 10
     ).run(sender = user2, now = sp.timestamp(700))
 
-    scenario.h3("Withdraw at stop time")
-    c1.withdraw(
-        streamId = 2,
-        amount = 10
-    ).run(sender = user2, now = sp.timestamp(1200))
+    # scenario.h3("Withdraw at stop time")
+    # c1.withdraw(
+    #     streamId = 2,
+    #     amount = 10
+    # ).run(sender = user2, now = sp.timestamp(1200))
 
-    scenario.h3("Withdraw after stop time")
-    c1.withdraw(
-        streamId = 2,
-        amount = 10
-    ).run(sender = user2, now = sp.timestamp(1500))
+    # scenario.h3("Withdraw after stop time")
+    # c1.withdraw(
+    #     streamId = 2,
+    #     amount = 10
+    # ).run(sender = user2, now = sp.timestamp(1500))
+
+    scenario.h2("Cancelling stream, FA2")
+    c1.cancelStream(
+        streamId = 2
+    ).run(sender = user1, now = sp.timestamp(900))
 
     
 

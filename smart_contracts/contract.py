@@ -71,7 +71,6 @@ class Radiate(sp.Contract):
 
     def checkRequester(self, streamId):
         sp.verify((sp.sender == self.data.streams[streamId].receiver), message = "Requester should be receiver of stream")
-        pass
 
     @sp.entry_point
     def createStream(self, params):
@@ -179,6 +178,8 @@ class Radiate(sp.Contract):
         stream = self.data.streams[params.streamId]
         timeDiff = self.timeDifference(params.streamId)
 
+        sp.verify(timeDiff > 0, message = "Can't proceed, time difference is 0")
+
         # balance should be greater than requested amount
         balance = self.balanceOfReceiver(sp.record(streamId = params.streamId, timeDifference = timeDiff))
         sp.verify(balance >= params.amount, message = "Not enough amount in your balance")
@@ -258,7 +259,6 @@ class Radiate(sp.Contract):
         )
 
         timeDiff = self.timeDifference(params.streamId)
-        # sp.operations().push(timeDiff)
 
         receiverBalance = self.balanceOfReceiver(sp.record(
                 streamId = params.streamId, 
@@ -349,4 +349,4 @@ class Radiate(sp.Contract):
                 )
                 sp.transfer(data_to_be_sent_receiver, sp.mutez(0), c)
 
-        del stream
+        del self.data.streams[params.streamId]
