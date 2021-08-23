@@ -25,7 +25,7 @@ def test():
     user1 = sp.test_account("user1")
     user2 = sp.test_account("user2")
 
-    scenario.h2("Initialise the contract")
+    scenario.h2("Initialise the Radiate contract")
     c1 = Radiate()
     scenario += c1
 
@@ -49,8 +49,20 @@ def test():
         )
     scenario += c2
 
+    scenario.h2("Initialise FA2 contract")
+
+    c3 = FA2(
+        config = FA2_config(non_fungible = False),
+        metadata = sp.utils.metadata_of_url("https://example.com"),
+        admin = admin
+    )
+
+    scenario += c3
+
+######################################### tez begins here #####################################
+
     scenario.h2("Creating first stream")
-    c1.createStream(                           # todo
+    c1.createStream(                           
         ratePerSecond = sp.nat(10),
         startTime = sp.timestamp(1729622656),
         stopTime = sp.timestamp(1829622656),
@@ -60,8 +72,8 @@ def test():
 
     scenario.h2("The failing withdraw case")
     c1.withdraw(
-    streamId = 0,
-    amount = 10
+        streamId = 0,
+        amount = 10
     ).run(sender = user2.address, now = sp.timestamp(100))
 
     scenario.h2("Withdrawing from stream of tez")
@@ -82,6 +94,7 @@ def test():
     amount = 10
     ).run(sender = user2.address, now = sp.timestamp(1819622656))
 
+    ######################################### FA1.2 begins here #####################################
 
     scenario.h2("Creating second stream for FA1.2 token")
     scenario.h3("Failing case, before minting")
@@ -105,24 +118,39 @@ def test():
         token = sp.variant("FA12", c2.address)
     ).run(sender = user1, now = sp.timestamp(300))
 
+    scenario.h2("Withdraw from stream, FA1.2")
+
+    scenario.h3("Withdrawing before start of stream")
+    c1.withdraw(
+        streamId = 1,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(100))
+
+    scenario.h3("Withdrawing after start, before stop time")
+    c1.withdraw(
+        streamId = 1,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(700))
+
+    scenario.h3("Withdraw at stop time")
+    c1.withdraw(
+        streamId = 1,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(1000))
+
+    scenario.h3("Withdraw after stop time")
+    c1.withdraw(
+        streamId = 1,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(1200))
 
     ######################################### FA2 begins here #####################################
-
-    scenario.h2("Initialise FA2")
-
-    c3 = FA2(
-        config = FA2_config(non_fungible = False),
-        metadata = sp.utils.metadata_of_url("https://example.com"),
-        admin = admin
-    )
-
-    scenario += c3
 
     scenario.h2("Create stream for FA2, failing case")
     c1.createStream(                           
         ratePerSecond = sp.nat(100),
         startTime = sp.timestamp(500),
-        stopTime = sp.timestamp(1000),
+        stopTime = sp.timestamp(1200),
         receiver = user2.address,
         token = sp.variant("FA2", sp.record(tokenAddress = c3.address, tokenId = 0))
     ).run(sender = user1, valid = False)
@@ -141,6 +169,7 @@ def test():
         token_id = 0
     ).run(sender = admin)
 
+    scenario.h2("Update operators")
     c3.update_operators(
         [
             sp.variant("add_operator", c3.operator_param.make(
@@ -151,14 +180,42 @@ def test():
         ]
     ).run(sender = admin)
 
-    scenario.h2("create stream for FA2, after minting")
+    scenario.h2("create stream for FA2, after minting and updating operators")
     c1.createStream(                           
         ratePerSecond = sp.nat(100),
         startTime = sp.timestamp(500),
-        stopTime = sp.timestamp(1000),
+        stopTime = sp.timestamp(1200),
         receiver = user2.address,
         token = sp.variant("FA2", sp.record(tokenAddress = c3.address, tokenId = 0))
     ).run(sender = user1, now = sp.timestamp(400))
+
+    scenario.h2("Withdraw from stream, FA2")
+
+    scenario.h3("Withdrawing before start of stream")
+    c1.withdraw(
+        streamId = 2,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(100))
+
+    scenario.h3("Withdrawing after start, before stop time")
+    c1.withdraw(
+        streamId = 2,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(700))
+
+    scenario.h3("Withdraw at stop time")
+    c1.withdraw(
+        streamId = 2,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(1200))
+
+    scenario.h3("Withdraw after stop time")
+    c1.withdraw(
+        streamId = 2,
+        amount = 10
+    ).run(sender = user2, now = sp.timestamp(1500))
+
+    
 
 
 
