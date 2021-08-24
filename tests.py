@@ -76,11 +76,22 @@ def test():
         amount = 10
     ).run(sender = user2.address, now = sp.timestamp(100), valid = False)
 
+    scenario.h2("Cancelling stream, tez")
+    c1.cancelStream(
+        streamId = 0
+    ).run(sender = alice, now = sp.timestamp(1729622654))
+
     scenario.h2("Withdrawing from stream of tez")
     c1.withdraw(
     streamId = 0,
     amount = 10
     ).run(sender = user2.address, now = sp.timestamp(1759622656))
+
+    scenario.h2("Withdraw before stopTime")
+    c1.withdraw(
+    streamId = 0,
+    amount = 10
+    ).run(sender = user2.address, now = sp.timestamp(1819622656))
 
     scenario.h2("To test if withdrawal works after stopTime")
     c1.withdraw(
@@ -88,11 +99,6 @@ def test():
     amount = 10
     ).run(sender = user2.address, now = sp.timestamp(1929622656))
 
-    scenario.h2("Withdraw before stopTime")
-    c1.withdraw(
-    streamId = 0,
-    amount = 10
-    ).run(sender = user2.address, now = sp.timestamp(1819622656))
 
     ######################################### FA1.2 begins here #####################################
 

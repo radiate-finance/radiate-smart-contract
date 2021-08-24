@@ -273,7 +273,9 @@ class Radiate(sp.Contract):
         with self.data.streams[params.streamId].token.match_cases() as arg:
             with arg.match("tez") as unit:
                 sp.send(self.data.streams[params.streamId].sender, sp.utils.nat_to_mutez(senderBalance), message = "Stream canceled")
-                sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "Stream canceled")
+                
+                sp.if receiverBalance != 0:
+                    sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "Stream canceled")
 
             with arg.match("FA12") as FA12_token:
                 data_type = sp.TRecord(
