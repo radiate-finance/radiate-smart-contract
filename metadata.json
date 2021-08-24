@@ -1,0 +1,6 @@
+{
+    "authors":["@shwetalsoni","@NishantChandla"],
+    "description":"The protocol for real-time finance on the Tezos blockchain",
+    "name":"Radiate",
+    "version":"1.0.0"
+}

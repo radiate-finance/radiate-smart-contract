@@ -25,7 +25,8 @@ class Radiate(sp.Contract):
                     sender = sp.TAddress,
                     token = TokenType
                 )
-            )
+            ),
+            metadata = sp.utils.metadata_of_url("ipfs://QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7")
         )
 
     def checkStartTime(self, startTime):
