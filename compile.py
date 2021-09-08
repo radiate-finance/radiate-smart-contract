@@ -44,6 +44,6 @@ sp.add_compilation_target(
 
 sp.add_compilation_target(
     "Radiate",
-    Radiate(),
+    Radiate(admin = sp.address("tz1f85LjxaHfWfPuNtZFg1aVBiaAkVnVnKsH")),
     flags = [["default_record_layout", "comb"]]
 )

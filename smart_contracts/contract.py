@@ -10,7 +10,7 @@ TokenType = sp.TVariant(
 )
 
 class Radiate(sp.Contract):
-    def __init__(self):
+    def __init__(self, admin):
         self.init(
             nextStreamId = sp.nat(0),
             admin = admin,
@@ -51,7 +51,7 @@ class Radiate(sp.Contract):
     def checkValidReceiver(self, receiver, sender):
         sp.verify(receiver != sender, message = "INVALID_RECEIVER")
 
-    @sp.entry_pointso
+    @sp.entry_point
     def delegate(self, baker):
         sp.verify(sp.sender == self.data.admin)
         sp.verify(sp.amount == sp.mutez(0))
@@ -304,7 +304,7 @@ class Radiate(sp.Contract):
                 sp.send(self.data.streams[params.streamId].sender, sp.utils.nat_to_mutez(senderBalance), message = "CANCELLED")
                 
                 sp.if receiverBalance != 0:
-                    sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "CANCELLED)
+                    sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "CANCELLED")
 
             with arg.match("FA12") as FA12_token:
                 data_type = sp.TRecord(

@@ -26,7 +26,7 @@ def test():
     user2 = sp.test_account("user2")
 
     scenario.h2("Initialise the Radiate contract")
-    c1 = Radiate()
+    c1 = Radiate(admin = admin)
     scenario += c1
 
     token_metadata = {
