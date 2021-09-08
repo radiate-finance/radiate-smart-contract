@@ -1,0 +1,14 @@
+{
+    "authors": [
+        "radiate.finance"
+    ],
+    "description": "Real-time money streaming protocol - Test tokens",
+    "homepage": "https://radiate.finance/",
+    "interfaces": [
+        "TZIP-12",
+        "TZIP-16",
+        "TZIP-21"
+    ],
+    "name": "Radiate finance test tokens",
+    "version": "1.0.0"
+}

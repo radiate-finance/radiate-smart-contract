@@ -1,0 +1,9 @@
+{
+    "symbol": "PLENTY",
+    "name": "Plenty DAO",
+    "decimals": 18,
+    "isTransferable": true,
+    "isBooleanAmount": false,
+    "shouldPreferSymbol": false,
+    "thumbnailUri": "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png"
+}

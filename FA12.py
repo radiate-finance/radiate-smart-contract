@@ -128,7 +128,6 @@ class FA12_mint_burn(FA12_core):
     @sp.entry_point
     def mint(self, params):
         sp.set_type(params, sp.TRecord(address = sp.TAddress, value = sp.TNat))
-        sp.verify(self.is_administrator(sp.sender), FA12_Error.NotAdmin)
         self.addAddressIfNecessary(params.address)
         self.data.balances[params.address].balance += params.value
         self.data.totalSupply += params.value
@@ -304,7 +303,7 @@ class TestOffchainView(sp.Contract):
             self.f(sp.record(data = data), params)
         self.data.result = sp.some(b.value)
 
-if "templates" not in __name__:
+if "templates" not in __name__ and __name__ != "__main__":
     @sp.add_test(name = "FA12")
     def test():
 
@@ -428,23 +427,23 @@ if "templates" not in __name__:
         c1.getAllowance((sp.record(owner = alice.address, spender = bob.address), view_allowance.typed.target))
         scenario.verify_equal(view_allowance.data.last, sp.some(1))
 
-    sp.add_compilation_target(
-        "FA1_2",
-        FA12(
-            admin   = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr"),
-            config  = FA12_config(
-                support_upgradable_metadata         = True,
-                use_token_metadata_offchain_view    = True
-            ),
-            token_metadata = {
-                "decimals"    : "18",             # Mandatory by the spec
-                "name"        : "My Great Token", # Recommended
-                "symbol"      : "MGT",            # Recommended
-                # Extra fields
-                "icon"        : 'https://smartpy.io/static/img/logo-only.svg'
-            },
-            contract_metadata = {
-                "" : "ipfs://QmaiAUj1FFNGYTu8rLBjc3eeN9cSKwaF8EGMBNDmhzPNFd",
-            }
-        )
-    )
+    # sp.add_compilation_target(
+    #     "FA1_2",
+    #     FA12(
+    #         admin   = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr"),
+    #         config  = FA12_config(
+    #             support_upgradable_metadata         = True,
+    #             use_token_metadata_offchain_view    = True
+    #         ),
+    #         token_metadata = {
+    #             "decimals"    : "18",             # Mandatory by the spec
+    #             "name"        : "My Great Token", # Recommended
+    #             "symbol"      : "MGT",            # Recommended
+    #             # Extra fields
+    #             "icon"        : 'https://smartpy.io/static/img/logo-only.svg'
+    #         },
+    #         contract_metadata = {
+    #             "" : "ipfs://QmaiAUj1FFNGYTu8rLBjc3eeN9cSKwaF8EGMBNDmhzPNFd",
+    #         }
+    #     )
+    # )

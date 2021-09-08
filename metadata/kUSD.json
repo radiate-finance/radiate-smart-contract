@@ -1,0 +1,9 @@
+{
+    "symbol": "kUSD",
+    "name": "Kolibri USD",
+    "decimals": 18,
+    "thumbnailUri": " https://kolibri-data.s3.amazonaws.com/logo.png",
+    "isTransferable": true,
+    "isBooleanAmount": false,
+    "shouldPreferSymbol": false
+}

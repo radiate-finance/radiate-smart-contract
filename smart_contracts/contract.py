@@ -13,6 +13,8 @@ class Radiate(sp.Contract):
     def __init__(self):
         self.init(
             nextStreamId = sp.nat(0),
+            admin = admin,
+            rewards = sp.nat(0),
             streams = sp.big_map(
                 tkey = sp.TNat, 
                 tvalue = sp.TRecord(
@@ -29,11 +31,16 @@ class Radiate(sp.Contract):
             metadata = sp.utils.metadata_of_url("ipfs://QmZcjtDZVGenfkHG321UfhPKEn7saKVQJJabiDEnKmNEB7")
         )
 
+    @sp.entry_point(name = "default")
+    def ep(self):
+        self.data.rewards += sp.utils.mutez_to_nat(sp.amount)
+        pass
+
     def checkStartTime(self, startTime):
-        sp.verify(startTime > sp.now, message = "Start time must be greater than block time")
+        sp.verify(startTime > sp.now, message = "START_TIME_LESS_THAN_CURRENT_TIME")
 
     def checkStopTime(self, startTime, stopTime):
-        sp.verify(stopTime > startTime, message = "Stop time must be greater than start time")
+        sp.verify(stopTime > startTime, message = "STOP_TIME_LESS_THAN_START_TIME")
 
     @sp.sub_entry_point
     def getDeposit(self, params):
@@ -42,7 +49,20 @@ class Radiate(sp.Contract):
         sp.result(duration * params.ratePerSecond)
 
     def checkValidReceiver(self, receiver, sender):
-        sp.verify(receiver != sender, message = "Invalid Receiver")
+        sp.verify(receiver != sender, message = "INVALID_RECEIVER")
+
+    @sp.entry_pointso
+    def delegate(self, baker):
+        sp.verify(sp.sender == self.data.admin)
+        sp.verify(sp.amount == sp.mutez(0))
+        sp.set_delegate(baker)
+
+    @sp.entry_point
+    def collect_management_rewards(self, params):
+        sp.verify(sp.sender == self.data.admin)
+        sp.verify(params.amount <= self.data.rewards)
+        sp.send(params.address, sp.utils.nat_to_mutez(params.amount))
+        self.data.rewards = sp.as_nat(self.data.rewards - params.amount)
     
     @sp.sub_entry_point
     def timeDifference(self, streamId):
@@ -71,7 +91,7 @@ class Radiate(sp.Contract):
 
 
     def checkRequester(self, streamId):
-        sp.verify((sp.sender == self.data.streams[streamId].receiver), message = "Requester should be receiver of stream")
+        sp.verify((sp.sender == self.data.streams[streamId].receiver), message = "NOT_RECEIVER")
 
     @sp.entry_point
     def createStream(self, params):
@@ -98,7 +118,7 @@ class Radiate(sp.Contract):
         # transfer tokens
         with params.token.match_cases() as arg:
             with arg.match("tez") as unit:
-                sp.verify(sp.amount == sp.utils.nat_to_mutez(deposit.value), message = "Invalid amount of tez")
+                sp.verify(sp.amount == sp.utils.nat_to_mutez(deposit.value), message = "INVALID_TEZ")
 
             with arg.match("FA12") as FA12_token:
                 data_type = sp.TRecord(
@@ -174,23 +194,31 @@ class Radiate(sp.Contract):
         ))
 
         self.checkRequester(params.streamId)
-        sp.verify(params.amount > 0, message = "Amount should be greater than zero")   
+        sp.verify(params.amount > 0, message = "AMOUNT_LESS_THAN_ZERO")   
 
         stream = self.data.streams[params.streamId]
         timeDiff = self.timeDifference(params.streamId)
 
-        sp.verify(timeDiff > 0, message = "Can't proceed, time difference is 0")
+        sp.verify(timeDiff > 0, message = "DURATION_0")
 
         # balance should be greater than requested amount
         balance = self.balanceOfReceiver(sp.record(streamId = params.streamId, timeDifference = timeDiff))
-        sp.verify(balance >= params.amount, message = "Not enough amount in your balance")
+        sp.verify(balance >= params.amount, message = "EXCEEDING_AMOUNT")
         
         stream.remainingBalance = sp.as_nat(stream.remainingBalance - params.amount)
 
         # token transfer
         with self.data.streams[params.streamId].token.match_cases() as arg:
             with arg.match("tez") as unit:
-                sp.send(sp.sender, sp.utils.nat_to_mutez(params.amount), message = "Withdrawal from stream")
+                sp.send(sp.sender, sp.utils.nat_to_mutez(params.amount), message = "WITHDRAWAL")
+
+                sp.if stream.remainingBalance == 0:
+                    reward = sp.local("reward", sp.utils.mutez_to_nat(sp.split_tokens(sp.utils.nat_to_mutez(self.data.rewards), stream.deposit, sp.utils.mutez_to_nat(sp.balance) * 4)))
+                    sp.send(stream.sender, sp.utils.nat_to_mutez(reward.value), message = "YIELD_REWARDS")
+                    sp.send(stream.receiver, sp.utils.nat_to_mutez(reward.value), message = "YIELD_REWARDS")
+                    self.data.rewards = sp.as_nat(self.data.rewards - (reward.value * 2))
+                sp.else:
+                    pass
 
             with arg.match("FA12") as FA12_token:
                 data_type = sp.TRecord(
@@ -273,10 +301,10 @@ class Radiate(sp.Contract):
         # token transfer
         with self.data.streams[params.streamId].token.match_cases() as arg:
             with arg.match("tez") as unit:
-                sp.send(self.data.streams[params.streamId].sender, sp.utils.nat_to_mutez(senderBalance), message = "Stream canceled")
+                sp.send(self.data.streams[params.streamId].sender, sp.utils.nat_to_mutez(senderBalance), message = "CANCELLED")
                 
                 sp.if receiverBalance != 0:
-                    sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "Stream canceled")
+                    sp.send(self.data.streams[params.streamId].receiver, sp.utils.nat_to_mutez(receiverBalance), message = "CANCELLED)
 
             with arg.match("FA12") as FA12_token:
                 data_type = sp.TRecord(

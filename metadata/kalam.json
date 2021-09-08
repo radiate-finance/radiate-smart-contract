@@ -1,0 +1,10 @@
+{
+    "symbol": "KALAM",
+    "name": "Kalamint",
+    "decimals": 10,
+    "description": "Kalamint NFT Platform Token",
+    "thumbnailUri": "ipfs://Qme9FX9M7o2PZt9h6rvkUbfXoLpQr1HsuMQi6sL5Y75g3A",
+    "isTransferable": true,
+    "isBooleanAmount": false,
+    "shouldPreferSymbol": false
+}

@@ -547,6 +547,24 @@ class FA2_mint(FA2_core):
             if self.config.store_total_supply:
                 self.data.total_supply[params.token_id] = params.amount
 
+    @sp.entry_point
+    def mint_more(self, params):
+        sp.set_type(params, sp.TRecord(
+            address = sp.TAddress,
+            amount = sp.TNat,
+            token_id = sp.TNat,
+        ))
+         
+        sp.verify(self.token_id_set.contains(self.data.all_tokens, params.token_id),
+                  message = "INVALID_TOKEN_ID")
+        user = self.ledger_key.make(params.address, params.token_id)
+        sp.if self.data.ledger.contains(user):
+            self.data.ledger[user].balance += params.amount
+        sp.else:
+            self.data.ledger[user] = Ledger_value.make(params.amount)
+        if self.config.store_total_supply:
+            self.data.total_supply[params.token_id] += params.amount
+
 class FA2_token_metadata(FA2_core):
     def set_token_metadata_view(self):
         def token_metadata(self, tok):
@@ -1061,7 +1079,7 @@ def environment_config():
 ##
 ## This specific main uses the relative new feature of non-default tests
 ## for the browser version.
-if "templates" not in __name__:
+if "templates" not in __name__ and __name__ != "__main__":
     add_test(environment_config())
     if not global_parameter("only_environment_test", False):
         add_test(FA2_config(debug_mode = True), is_default = not sp.in_browser)
@@ -1082,6 +1100,6 @@ if "templates" not in __name__:
         add_test(FA2_config(lazy_entry_points = True)
                  , is_default = not sp.in_browser)
 
-    sp.add_compilation_target("FA2_comp", FA2(config = environment_config(),
-                              metadata = sp.utils.metadata_of_url("https://example.com"),
-                              admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))
+    # sp.add_compilation_target("FA2_comp", FA2(config = environment_config(),
+    #                           metadata = sp.utils.metadata_of_url("https://example.com"),
+    #                           admin = sp.address("tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr")))

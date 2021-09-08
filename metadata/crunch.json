@@ -1,0 +1,9 @@
+{
+    "symbol": "CRUNCH",
+    "name": "CRUNCHY",
+    "decimals": 8,
+    "thumbnailUri": "ipfs://QmXqwHGmRctutGHZ4XqDaRdfxqywbNg7FT2sNv2SZ4CzAP",
+    "isTransferable": true,
+    "isBooleanAmount": false,
+    "shouldPreferSymbol": true
+}
